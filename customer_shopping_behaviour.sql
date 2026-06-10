@@ -8,24 +8,26 @@ from customer_shopping_behavior
 group by gender;
 
 # Which customers used a discount but still spent more than the average purchase amount?
-select c.customer_id,c.gender,c.purchase_amount,a.avg_amount
-from customer_shopping_behavior c
-join
-(select avg(purchase_amount)as avg_amount
- from customer_shopping_behavior) as a
-where c.discount_applied='Yes' and c.purchase_amount>=a.avg_amount;
+SELECT customer_id,
+       gender,
+       purchase_amount
+FROM customer_shopping_behavior
+WHERE discount_applied = 'Yes'
+  AND purchase_amount > (
+      SELECT AVG(purchase_amount)
+      FROM customer_shopping_behavior
+  );
 
 # Which are the top 5 products with the highest average review rating?
 
-select * from customer_shopping_behavior;
-select c.item_purchased,c.review_rating,a.avg_review_rating
-from customer_shopping_behavior c
-join
-(select avg(review_rating) as avg_review_rating
-from customer_shopping_behavior)as a
-where c.review_rating>=a.avg_review_rating
-order by c.review_rating desc
-limit 5;
+SELECT item_purchased,
+       AVG(review_rating) AS avg_rating,
+       COUNT(*) AS total_reviews
+FROM customer_shopping_behavior
+GROUP BY item_purchased
+HAVING COUNT(*) >= 5
+ORDER BY avg_rating DESC
+LIMIT 5;
 
 # compare the average purchase amounts between standarad and express shipping?
 
@@ -36,24 +38,13 @@ group by shipping_type ;
 # do subscribed customers spend more? compare average spend and total revenue 
 -- between subscribers and non-subscibers?
 
-select distinct(x.total_customers),x.avg_purchase_amount,x.total_revenu 
-,x.subscription_status
-from customer_shopping_behavior c 
-join
-(
-select subscription_status,count(customer_id) as total_customers,round(avg(purchase_amount),2) as avg_purchase_amount,
-sum(purchase_amount) as total_revenu from customer_shopping_behavior 
- where subscription_status in ('Yes','No')
- group by subscription_status) as x 
- on c.subscription_status = x.subscription_status;
- 
- select * from customer_shopping_behavior;
- 
- select subscription_status,count(customer_id) as total_numbers,avg(purchase_amount) as avg_amount,
- sum(purchase_amount) as total_revenu
-from customer_shopping_behavior
-group by subscription_status
-order by total_revenu desc;
+SELECT subscription_status,
+       COUNT(customer_id) AS total_customers,
+       ROUND(AVG(purchase_amount), 2) AS avg_purchase_amount,
+       SUM(purchase_amount) AS total_revenue
+FROM customer_shopping_behavior
+GROUP BY subscription_status
+ORDER BY total_revenue DESC;
 
 # which 5 products have the highest percentage of purchases with discounts applied?
 

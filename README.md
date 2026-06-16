@@ -1,7 +1,7 @@
 # Customer Shopping Behavior Analysis
 
 ## Project Overview
-This project analyzes **customer shopping behavior** using transactional data from **3,900 purchases** across multiple product categories.  
+This Project analyzes **customer shopping behavior** using transactional data from **3,900 purchases** across multiple product categories.  
 The goal is to uncover insights into **spending patterns, customer segmentation, product preferences, and subscription behavior** to support **data-driven business decisions**.
 
 The project demonstrates an **end-to-end data analytics workflow** using **Python for data preparation and EDA**, **MySQL for structured analysis**, and **Power BI for interactive dashboards**.
